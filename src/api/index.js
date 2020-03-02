@@ -2,19 +2,26 @@ const axios = require('axios').default;
 
 const baseApi = 'https://jlrc.dev.perx.ru/carstock/api/v1/';
 
-export async function getVehicles() {
-  const url = new URL('vehicles/?state=active&hidden=false&group=new', baseApi);
+export async function getVehicles(page = 1, perPage = 10) {
+  const url = new URL(
+    `vehicles/?state=active&hidden=false&group=new&page=${page}&per_page=${perPage}`,
+    baseApi
+  );
 
-  try {
-    const vehiclesResponse = await axios.get(url, {
-      headers: {
-        'X-CS-Dealer-Id-Only': 1,
-      },
-    });
-    const pageCount = vehiclesResponse.headers['X-Total-Count'];
+  const vehiclesResponse = await axios.get(url, {
+    headers: {
+      'x-cs-dealer-id-only': 1,
+    },
+  });
+  const totalCount = Number(vehiclesResponse.headers['x-total-count']);
 
-    return { pageCount, vehicles: vehiclesResponse.data };
-  } catch (err) {
-    throw err;
-  }
+  return { totalCount, vehicles: vehiclesResponse.data };
+}
+
+export async function getDealer(id) {
+  const url = new URL(`dealers/${id}`);
+
+  const {data} = await axios.get(url)
+
+  return data
 }

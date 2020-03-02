@@ -4,8 +4,9 @@ import { getVehicles } from '../../api';
 const initialState = {
   loading: false,
   error: null,
+  vehiclesById: {},
   currentPageVehicles: [],
-  pageCount: 0,
+  totalCount: 0,
 };
 
 const vehicles = createSlice({
@@ -17,11 +18,17 @@ const vehicles = createSlice({
       state.error = null;
     },
     getVehiclesSuccess(state, { payload }) {
-      const { vehicles, pageCount } = payload;
+      const { vehicles, totalCount } = payload;
 
       state.loading = false;
-      state.currentPageVehicles = vehicles;
-      state.pageCount = pageCount;
+      state.error = null;
+
+      state.totalCount = totalCount;
+      state.currentPageVehicles = vehicles.map(vehicle => vehicle.id);
+
+      vehicles.forEach(vehicle => {
+        state.vehiclesById[vehicle.id] = vehicle;
+      });
     },
     getVehiclesFailed(state, { payload }) {
       state.loading = false;
@@ -37,10 +44,10 @@ export const {
 
 export default vehicles.reducer;
 
-export const fetchVehicles = () => async dispatch => {
+export const fetchVehicles = (page, perPage) => async dispatch => {
   try {
     dispatch(getVehiclesStart());
-    const vehicles = await getVehicles();
+    const vehicles = await getVehicles(page, perPage);
     dispatch(getVehiclesSuccess(vehicles));
   } catch (err) {
     dispatch(getVehiclesFailed(err.toString()));
