@@ -1,3 +1,6 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux';
+import vehiclesReducer from '../features/vehicles/vehiclesSlice';
 
-export default combineReducers({})
+export default combineReducers({
+  vehicles: vehiclesReducer,
+});
