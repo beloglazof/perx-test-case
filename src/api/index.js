@@ -19,14 +19,6 @@ export async function getVehicles(page = 1, perPage = 10) {
   return { totalCount, vehicles: vehiclesResponse.data };
 }
 
-export async function getDealer(id) {
-  const url = new URL(`dealers/${id}`, baseApi);
-
-  const { data } = await axios.get(url);
-
-  return data;
-}
-
 export async function getDealers(idList = []) {
   const url = new URL(`dealers/?id__in=${idList.toString()}`, baseApi);
 
