@@ -37,6 +37,7 @@ const vehicles = createSlice({
     },
   },
 });
+
 export const {
   getVehiclesFailed,
   getVehiclesStart,

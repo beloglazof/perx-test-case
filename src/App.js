@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Table } from 'antd';
 import { fetchVehicles } from './features/vehicles/vehiclesSlice';
+import { setCurrentPage } from './features/vehiclesDisplay/vehiclesDisplaySlice';
 
 import './App.css';
-import { Table } from 'antd';
-import { setCurrentPage } from './features/vehiclesDisplay/vehiclesDisplaySlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -42,7 +42,6 @@ function App() {
     );
   }
 
-  // vin, brand, model, grade, dealer, dealer address
   const columns = [
     {
       title: 'VIN',
@@ -65,13 +64,14 @@ function App() {
       dataIndex: 'dealerName',
     },
     {
-      title: 'Dealer Address',
-      key: 'dealerAddress',
+      title: 'Office Address',
+      key: 'officeAddress',
       render: (_, { dealer: dealerId, office_ids }) => {
         const dealer = dealersById[dealerId];
         if (!dealer) {
           return ''
         }
+        
         const officeAddressList = office_ids.map(
           officeId => dealer.offices.find(({ id }) => officeId === id).address
         );
