@@ -15,6 +15,8 @@ function App() {
     dispatch(setCurrentPage(page));
   };
 
+  const { dealersById } = useSelector(state => state.dealers);
+
   const {
     loading: vehiclesLoading,
     error: vehiclesError,
@@ -65,6 +67,16 @@ function App() {
     {
       title: 'Dealer Address',
       key: 'dealerAddress',
+      render: (_, { dealer: dealerId, office_ids }) => {
+        const dealer = dealersById[dealerId];
+        if (!dealer) {
+          return ''
+        }
+        const officeAddressList = office_ids.map(
+          officeId => dealer.offices.find(({ id }) => officeId === id).address
+        );
+        return officeAddressList;
+      },
     },
   ];
 
@@ -72,7 +84,7 @@ function App() {
     current: page,
     total: totalCount,
     pageSize: perPage,
-    onChange: goToPage
+    onChange: goToPage,
   };
 
   return (

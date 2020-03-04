@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getVehicles } from '../../api';
+import { fetchDealers } from '../dealers/dealersSlice';
 
 const initialState = {
   loading: false,
@@ -47,8 +48,14 @@ export default vehicles.reducer;
 export const fetchVehicles = (page, perPage) => async dispatch => {
   try {
     dispatch(getVehiclesStart());
-    const vehicles = await getVehicles(page, perPage);
-    dispatch(getVehiclesSuccess(vehicles));
+    const vehiclesData = await getVehicles(page, perPage);
+    dispatch(getVehiclesSuccess(vehiclesData));
+
+    const { vehicles } = vehiclesData;
+    if (vehicles.length > 0) {
+      const dealerIdList = vehicles.map(({ dealer }) => dealer);
+      dispatch(fetchDealers(dealerIdList));
+    }
   } catch (err) {
     dispatch(getVehiclesFailed(err.toString()));
   }
